@@ -27,6 +27,8 @@ class Tools {
    */
   Eigen::MatrixXd CalculateJacobian(const Eigen::VectorXd& x_state);
 
+  float NormalizePhi(float phi);
+
 };
 
 #endif  // TOOLS_H_
