@@ -13,6 +13,7 @@ using std::vector;
  * Constructor.
  */
 FusionEKF::FusionEKF() {
+  //cout << "FusionEKF Constructor called" << endl;
   is_initialized_ = false;
 
   previous_timestamp_ = 0;
@@ -64,6 +65,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   /**
    * Initialization
    */
+  //cout << "ProcessMeasurement called" << endl;
   if (!is_initialized_) {
     /**
      * TODO: Initialize the state ekf_.x_ with the first measurement.
@@ -84,17 +86,19 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         0, 1, 0, 0,
         0, 0, 1000, 0,
         0, 0, 0, 1000;
+        
+    /*ekf_.P_ << 0.00706985, 0.00226997,  0.0184169, 0.00695398,
+        0.00226997, 0.00511771, 0.00826626 , 0.0114158,
+        0.0184169, 0.00826626 ,  0.120551 , 0.0371732,
+        0.00695398,  0.0114158 , 0.0371732 , 0.0888411;*/
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-      // TODO: Convert radar from polar to cartesian coordinates 
-      //         and initialize state.
         ekf_.x_(0) = measurement_pack.raw_measurements_(0)*cos(measurement_pack.raw_measurements_(1));
         ekf_.x_(1) = measurement_pack.raw_measurements_(0) * sin(measurement_pack.raw_measurements_(1));
         ekf_.x_(2) = measurement_pack.raw_measurements_(2) * cos(measurement_pack.raw_measurements_(1));
         ekf_.x_(3) = measurement_pack.raw_measurements_(2) * cos(measurement_pack.raw_measurements_(1));
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
-      // TODO: Initialize state.
         ekf_.x_(0) = measurement_pack.raw_measurements_(0);
         ekf_.x_(1) = measurement_pack.raw_measurements_(1);
         ekf_.x_(2) = 0;
@@ -111,7 +115,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
   previous_timestamp_ = measurement_pack.timestamp_;
 
-  cout << "Timestamp = " << previous_timestamp_ << " dt " << dt << endl;
   float dt_2 = dt * dt;
   float dt_3 = dt_2 * dt;
   float dt_4 = dt_3 * dt;
@@ -162,6 +165,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   }
 
   // print the output
-  cout << "x_ = " << ekf_.x_ << endl;
-  cout << "P_ = " << ekf_.P_ << endl;
+  //cout << "x_ = " << ekf_.x_ << endl;
+  //cout << "P_ = " << ekf_.P_ << endl;
 }
